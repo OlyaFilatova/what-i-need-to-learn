@@ -1,7 +1,7 @@
 import {WordCount} from '../entities/word-count';
 import {Word} from '../entities/word';
 
-export class ParseText {
+export class ParseWordsFromText {
   parse(text: string): WordCount[] {
     const res = [];
     let words = text.split(' ');
