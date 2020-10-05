@@ -1,0 +1,11 @@
+:host {
+  padding: 1em;
+  display:block;
+}
+.mat-form-field {
+  width: 100%;
+}
+.mat-form-field ::ng-deep textarea {
+  resize: none;
+  min-height: 200px;
+}

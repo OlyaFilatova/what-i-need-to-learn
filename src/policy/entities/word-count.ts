@@ -9,4 +9,10 @@ export class WordCount {
     setCount(count: number) {
       this.count = count;
     }
+    public getWord() {
+      return this.word;
+    }
+    public getCount() {
+      return this.count;
+    }
 }
