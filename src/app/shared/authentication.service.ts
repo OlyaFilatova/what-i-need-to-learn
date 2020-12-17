@@ -1,49 +1,52 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from "@angular/fire/auth";
-import { Observable } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { User } from '../models/user.model';
+import { auth } from 'firebase';
+
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthenticationService {
-  userData: Observable<firebase.User>;
+  user$: Observable<User>;
 
-  constructor(private angularFireAuth: AngularFireAuth) {
-    this.userData = angularFireAuth.authState;
+  constructor(private angularFireAuth: AngularFireAuth,
+              private firestore: AngularFirestore,
+              private router: Router) {
+    /*this.user$ = angularFireAuth.authState.pipe(switchMap(user => {
+      if (user) {
+        return this.firestore.doc<User>(`users/${user.uid}`).valueChanges();
+      } else {
+        return of(null);
+      }
+    }));*/
   }
 
-  /* Sign up */
-  SignUp(email: string, password: string) {
-    this.angularFireAuth
-      .auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(res => {
-        console.log('Successfully signed up!', res);
-      })
-      .catch(error => {
-        console.log('Something is wrong:', error.message);
-      });
+  async googleSignIn() {
+    const provider = new auth.GoogleAuthProvider();
+    const credential = await this.angularFireAuth.signInWithPopup(provider);
+    return this.updateUserData(credential.user);
   }
+  updateUserData(user: User) {
+    const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${user.uid}`);
 
-  /* Sign in */
-  SignIn(email: string, password: string) {
-    this.angularFireAuth
-      .auth
-      .signInWithEmailAndPassword(email, password)
-      .then(res => {
-        console.log('Successfully signed in!');
-      })
-      .catch(err => {
-        console.log('Something is wrong:',err.message);
-      });
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL
+    };
+
+    return userRef.set(data, { merge: true });
   }
-
-  /* Sign out */
-  SignOut() {
-    this.angularFireAuth
-      .auth
-      .signOut();
+  async googleSignOut() {
+    await this.angularFireAuth.signOut();
+    return this.router.navigate(['/']);
   }
 
 }
