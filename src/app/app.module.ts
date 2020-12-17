@@ -12,9 +12,14 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 /* Auth service */
 import { AuthenticationService } from './shared/authentication.service';
+import {RouterModule} from '@angular/router';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -23,8 +28,15 @@ import { AuthenticationService } from './shared/authentication.service';
     FormsModule,
     MatInputModule,
     MatButtonModule,
+    MatExpansionModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    ScrollingModule,
+    RouterModule.forRoot(
+      [
+        /*{ path: 'notes', component: NotesListComponent,  canActivate: [AuthGuard] }*/
+      ]
+    )
   ],
   providers: [AuthenticationService],
   bootstrap: [AppComponent]

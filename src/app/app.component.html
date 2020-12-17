@@ -1,41 +1,308 @@
-<h1 *ngIf="authenticationService.userData | async">Hello {{ (authenticationService.userData | async)?.email }}</h1>
+<h1>What I need To Learn</h1>
+<app-user-profile></app-user-profile>
 
-<div *ngIf="!(authenticationService.userData | async)">
-  <input type="text" [(ngModel)]="email" placeholder="email">
-  <input type="password" [(ngModel)]="password" placeholder="password">
-
-  <button (click)="signUp()">Sign Up</button>
-
-  <button (click)="signIn()">Login</button>
-</div>
-
-<button (click)="signOut()" *ngIf="authenticationService.userData | async">Logout</button>
+<router-outlet></router-outlet>
 
 
 
+<mat-accordion>
+  <mat-expansion-panel hideToggle (opened)="step = 0;getKnownWords()">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h2>Parse some text</h2>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Insert text</mat-label>
+      <textarea matInput [formControl]="textControl"></textarea>
+    </mat-form-field>
+    <div>
+      <button (click)="parseClicked()" mat-raised-button color="primary">Parse</button>
+      <div *ngIf="authenticationService.user$ | async">
+        <div *ngIf="res.length">
+          <mat-form-field class="example-full-width">
+            <mat-label>New book title</mat-label>
+            <input matInput [formControl]="titleControl" />
+          </mat-form-field>
+          <button (click)="saveBook()" mat-raised-button color="primary">Save as Book</button>
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <ng-container *ngIf="authenticationService.user$ | async">
+    <mat-expansion-panel hideToggle (opened)="step=1;getBooks()">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>My books</h2>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div *ngFor="let book of books; let i = index" class="book-row">
+        <strong>{{book.payload.doc.data().title}}</strong><button type="button" (click)="readBook(i)" mat-raised-button color="primary">Read</button>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle (opened)="step=2;getKnownWords()">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Known words</h2>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngFor="let word of knownWords" class="word-row">
+        <strong>{{ word.payload.doc.data().text }} </strong>
+        <button type="button" (click)="removeFromAlreadyKnow(word)" mat-raised-button color="accent">I don't know this word</button>
+      </div>
+    </mat-expansion-panel>
+  </ng-container>
+
+  <ng-container *ngIf="wordsCount">
+    <h2>Words count - {{wordsCount}}</h2>
+    <mat-expansion-panel [expanded]="step === 10" hideToggle (opened)="step=10">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Irregular Verbs</h2>
+          <p><strong>Words count</strong> - {{irregularVerbs.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="irregularVerbs && irregularVerbs.length">
+        <div *ngFor="let p of irregularVerbs" class="new-word-row">
+          <ng-container *ngIf="p">
+            <strong>{{p}}</strong>
+          </ng-container>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step === 4" hideToggle (opened)="step=4">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Words from the book 4000 #1</h2>
+          <p><strong>Words count</strong> - {{bookOneWords.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="bookOneWords && bookOneWords.length">
+        <div *ngFor="let p of bookOneWords" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 5" hideToggle (opened)="step=5">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Words from the book 4000 #2</h2>
+          <p><strong>Words count</strong> - {{bookTwoWords.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="bookTwoWords && bookTwoWords.length">
+        <div *ngFor="let p of bookTwoWords" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 6" hideToggle (opened)="step=6">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Words from the book 4000 #3</h2>
+          <p><strong>Words count</strong> - {{bookThreeWords.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="bookThreeWords && bookThreeWords.length">
+        <div *ngFor="let p of bookThreeWords" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 7" hideToggle (opened)="step=7">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Words from the book 4000 #4</h2>
+          <p><strong>Words count</strong> - {{bookFourWords.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="bookFourWords && bookFourWords.length">
+        <div *ngFor="let p of bookFourWords" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 8" hideToggle (opened)="step=8">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Words from the book 4000 #5</h2>
+          <p><strong>Words count</strong> - {{bookFiveWords.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="bookFiveWords && bookFiveWords.length">
+        <div *ngFor="let p of bookFiveWords" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 9" hideToggle (opened)="step=9">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Words from the book 4000 #6</h2>
+          <p><strong>Words count</strong> - {{bookSixWords.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="bookSixWords && bookSixWords.length">
+        <div *ngFor="let p of bookSixWords" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 11" hideToggle (opened)="step=11">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>English DOM - Elementary</h2>
+          <p><strong>Words count</strong> - {{englishDomElementary.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="englishDomElementary && englishDomElementary.length">
+        <div *ngFor="let p of englishDomElementary" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 12" hideToggle (opened)="step=12">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>English DOM - Pre Intermidiate</h2>
+          <p><strong>Words count</strong> - {{englishDomPreIntermidiate.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="englishDomPreIntermidiate && englishDomPreIntermidiate.length">
+        <div *ngFor="let p of englishDomPreIntermidiate" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step === 13" hideToggle (opened)="step=13">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>English DOM - Intermidiate</h2>
+          <p><strong>Words count</strong> - {{englishDomIntermidiate.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="englishDomIntermidiate && englishDomIntermidiate.length">
+        <div *ngFor="let p of englishDomIntermidiate" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 14" hideToggle (opened)="step=14">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>English DOM - Upper Intermidiate</h2>
+          <p><strong>Words count</strong> - {{englishDomUpperIntermidiate.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="englishDomUpperIntermidiate && englishDomUpperIntermidiate.length">
+        <div *ngFor="let p of englishDomUpperIntermidiate" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 15" hideToggle (opened)="step=15">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>English DOM - Native</h2>
+          <p><strong>Words count</strong> - {{englishDomNative.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="englishDomNative && englishDomNative.length">
+        <div *ngFor="let p of englishDomNative" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 16" hideToggle (opened)="step=16">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>English DOM - IELTS</h2>
+          <p><strong>Words count</strong> - {{englishDomIelts.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="englishDomIelts && englishDomIelts.length">
+        <div *ngFor="let p of englishDomIelts" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 17" hideToggle (opened)="step=17">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>504 Essential Words</h2>
+          <p><strong>Words count</strong> - {{book504.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="book504 && book504.length">
+        <div *ngFor="let p of book504" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
 
 
+    <mat-expansion-panel [expanded]="step === 3" hideToggle (opened)="step=3">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Other words</h2>
+          <p><strong>Words count</strong> - {{res.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-<mat-form-field class="example-full-width">
-  <mat-label>Insert text</mat-label>
-  <textarea matInput [formControl]="textControl"></textarea>
-</mat-form-field>
-<div>
+      <ng-container *ngIf="res && res.length">
+        <div *ngFor="let p of res" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="book && bookWords">
+        <p style="height: 40px;"><strong>Words count</strong> - {{bookWords.length}} <button *ngIf="addToKnown && addToKnown.length > 0" mat-raised-button style="float:right" color="warn" (click)="saveBookChanges()">Save Changes</button></p>
+        <cdk-virtual-scroll-viewport itemSize="60">
+          <ng-container *ngFor="let p of bookWords; let i = index">
+            <div class="new-word-row">
 
-  <button (click)="parseClicked()" mat-raised-button color="primary">Parse</button>
-</div>
-<div>
-  <div *ngIf="list.length">
-    <div *ngFor="let l of list">{{l.getText()}}</div>
-  </div>
-  <p><strong>Words count</strong> - {{res.length}}</p>
-  <div *ngFor="let p of res">
-    <strong>{{p.getWord().getText()}}</strong>
-    &nbsp;
-    <span>{{p.getCount()}}</span>
+              <strong>{{p.text}}</strong>
 
-    <button (click)="addToList(p.getWord())" mat-raised-button>Add to filter</button>
-    <button (click)="addToAlreadyKnow(p.getWord())" mat-raised-button color="accent">I know this word</button>
-  </div>
+              <span>{{p.count}}</span>
 
-</div>
+              <button type="button" mat-raised-button (click)="removeFromTheBook($event, i)" color="accent">I really know this word</button>
+            </div>
+          </ng-container>
+        </cdk-virtual-scroll-viewport>
+      </ng-container>
+    </mat-expansion-panel>
+
+
+    <mat-expansion-panel [expanded]="step === 18" hideToggle (opened)="step=18">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Full List of Words</h2>
+          <p><strong>Words count</strong> - {{uniqueWordsRes.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="uniqueWordsRes && uniqueWordsRes.length">
+        <div *ngFor="let p of uniqueWordsRes" class="new-word-row">
+          <strong>{{p.getWord().getText()}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </ng-container>
+</mat-accordion>
