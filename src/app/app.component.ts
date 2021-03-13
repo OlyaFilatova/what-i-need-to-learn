@@ -7,6 +7,7 @@ import {WordsService} from './services/words.service';
 import {AuthenticationService} from './shared/authentication.service';
 import {BooksService} from './services/books.service';
 import {Book} from './models/book.model';
+import {ParseResult} from './models/parse-result';
 
 @Component({
   selector: 'app-root',
@@ -17,22 +18,7 @@ export class AppComponent {
   textControl = new FormControl('');
   titleControl = new FormControl('New Book');
   title = 'what-i-need-to-learn';
-  res: string[] = [];
-  bookOneWords: string[] = [];
-  uniqueWordsRes: WordCount[] = [];
-  bookTwoWords: string[] = [];
-  bookThreeWords: string[] = [];
-  bookFourWords: string[] = [];
-  bookFiveWords: string[] = [];
-  bookSixWords: string[] = [];
-  irregularVerbs: string[] = [];
-  englishDomElementary: string[] = [];
-  englishDomPreIntermidiate: string[] = [];
-  englishDomIntermidiate: string[] = [];
-  englishDomUpperIntermidiate: string[] = [];
-  englishDomNative: string[] = [];
-  englishDomIelts: string[] = [];
-  book504: string[] = [];
+  parseRes: ParseResult;
   addToKnown = [];
   knownWords;
   books;
@@ -81,22 +67,7 @@ export class AppComponent {
   }
 
   parseClicked() {
-    this.uniqueWordsRes = [];
-    this.res = [];
-    this.bookOneWords = [];
-    this.bookTwoWords = [];
-    this.bookThreeWords = [];
-    this.bookFourWords = [];
-    this.bookFiveWords = [];
-    this.bookSixWords = [];
-    this.irregularVerbs = [];
-    this.englishDomElementary = [];
-    this.englishDomPreIntermidiate = [];
-    this.englishDomIntermidiate = [];
-    this.englishDomUpperIntermidiate = [];
-    this.englishDomNative = [];
-    this.englishDomIelts = [];
-    this.book504 = [];
+    this.parseRes = null;
     const text = this.getText();
     this.book = null;
     this.parseText(text);
@@ -109,93 +80,8 @@ export class AppComponent {
           knownWords.push(word.payload.doc.data().text);
         }
       }
-      const parseRes: {
-        uniqueWordsRes: WordCount[],
-        otherWords: string[],
-        bookOneWords: string[],
-        bookTwoWords: string[],
-        bookThreeWords: string[],
-        bookFourWords: string[],
-        bookFiveWords: string[],
-        bookSixWords: string[],
-        irregularVerbs: string[],
-        englishDomElementary: string[],
-        englishDomPreIntermidiate: string[],
-        englishDomIntermidiate: string[],
-        englishDomUpperIntermidiate: string[],
-        englishDomNative: string[],
-        book504: string[],
-        englishDomIelts: string[]
-      } = (new ParseWordsFromText()).parse(text, knownWords);
-      this.wordsCount = parseRes.uniqueWordsRes.length;
-      let p: string;
-      for (let i = 0; i < parseRes.otherWords.length; i ++) {
-        p = parseRes.otherWords[i];
-        this.res.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-
-      for (let i = 0; i < parseRes.irregularVerbs.length; i ++) {
-        p = parseRes.irregularVerbs[i];
-        this.irregularVerbs.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.bookOneWords.length; i ++) {
-        p = parseRes.bookOneWords[i];
-        this.bookOneWords.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      let w: WordCount = null;
-      for (let i = 0; i < parseRes.uniqueWordsRes.length; i ++) {
-        w = parseRes.uniqueWordsRes[i];
-        this.uniqueWordsRes.push(w); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.bookTwoWords.length; i ++) {
-        p = parseRes.bookTwoWords[i];
-        this.bookTwoWords.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.bookThreeWords.length; i ++) {
-        p = parseRes.bookThreeWords[i];
-        this.bookThreeWords.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.bookFourWords.length; i ++) {
-        p = parseRes.bookFourWords[i];
-        this.bookFourWords.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.bookFiveWords.length; i ++) {
-        p = parseRes.bookFiveWords[i];
-        this.bookFiveWords.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.bookSixWords.length; i ++) {
-        p = parseRes.bookSixWords[i];
-        this.bookSixWords.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.englishDomElementary.length; i ++) {
-        p = parseRes.englishDomElementary[i];
-        this.englishDomElementary.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.englishDomPreIntermidiate.length; i ++) {
-        p = parseRes.englishDomPreIntermidiate[i];
-        this.englishDomPreIntermidiate.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-
-      for (let i = 0; i < parseRes.englishDomIntermidiate.length; i ++) {
-        p = parseRes.englishDomIntermidiate[i];
-        this.englishDomIntermidiate.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.englishDomUpperIntermidiate.length; i ++) {
-        p = parseRes.englishDomUpperIntermidiate[i];
-        this.englishDomUpperIntermidiate.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.englishDomNative.length; i ++) {
-        p = parseRes.englishDomNative[i];
-        this.englishDomNative.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.englishDomIelts.length; i ++) {
-        p = parseRes.englishDomIelts[i];
-        this.englishDomIelts.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
-      for (let i = 0; i < parseRes.book504.length; i ++) {
-        p = parseRes.book504[i];
-        this.book504.push(p); // p.getWord().getText() + ' ' + p.getCount()
-      }
+      this.parseRes = (new ParseWordsFromText()).parse(text, knownWords);
+      this.wordsCount = this.parseRes.uniqueWordsRes.length;
     }
   }
 
@@ -260,22 +146,7 @@ export class AppComponent {
     this.bookWords = this.stringToBookWords(this.book.payload.doc.data().wordsString);
     this.titleControl.setValue(this.book.payload.doc.data().title);
     this.textControl.setValue(this.book.payload.doc.data().text);
-    this.res = [];
-    this.bookOneWords = [];
-    this.uniqueWordsRes = [];
-    this.bookTwoWords = [];
-    this.bookThreeWords = [];
-    this.bookFourWords = [];
-    this.bookFiveWords = [];
-    this.bookSixWords = [];
-    this.irregularVerbs = [];
-    this.englishDomElementary = [];
-    this.englishDomPreIntermidiate = [];
-    this.englishDomIntermidiate = [];
-    this.englishDomUpperIntermidiate = [];
-    this.englishDomNative = [];
-    this.englishDomIelts = [];
-    this.book504 = [];
+    this.parseRes = null;
     this.step = 3;
   }
   stringToBookWords(wordsString) {

@@ -20,7 +20,7 @@
     <div>
       <button (click)="parseClicked()" mat-raised-button color="primary">Parse</button>
       <div *ngIf="authenticationService.user$ | async">
-        <div *ngIf="res.length">
+        <div *ngIf="parseRes.otherWords.length">
           <mat-form-field class="example-full-width">
             <mat-label>New book title</mat-label>
             <input matInput [formControl]="titleControl" />
@@ -61,12 +61,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Irregular Verbs</h2>
-          <p><strong>Words count</strong> - {{irregularVerbs.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.irregularVerbs.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="irregularVerbs && irregularVerbs.length">
-        <div *ngFor="let p of irregularVerbs" class="new-word-row">
+      <ng-container *ngIf="parseRes.irregularVerbs && parseRes.irregularVerbs.length">
+        <div *ngFor="let p of parseRes.irregularVerbs" class="new-word-row">
           <ng-container *ngIf="p">
             <strong>{{p}}</strong>
           </ng-container>
@@ -78,12 +78,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Words from the book 4000 #1</h2>
-          <p><strong>Words count</strong> - {{bookOneWords.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.bookOneWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="bookOneWords && bookOneWords.length">
-        <div *ngFor="let p of bookOneWords" class="new-word-row">
+      <ng-container *ngIf="parseRes.bookOneWords && parseRes.bookOneWords.length">
+        <div *ngFor="let p of parseRes.bookOneWords" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -92,12 +92,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Words from the book 4000 #2</h2>
-          <p><strong>Words count</strong> - {{bookTwoWords.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.bookTwoWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="bookTwoWords && bookTwoWords.length">
-        <div *ngFor="let p of bookTwoWords" class="new-word-row">
+      <ng-container *ngIf="parseRes.bookTwoWords && parseRes.bookTwoWords.length">
+        <div *ngFor="let p of parseRes.bookTwoWords" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -106,12 +106,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Words from the book 4000 #3</h2>
-          <p><strong>Words count</strong> - {{bookThreeWords.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.bookThreeWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="bookThreeWords && bookThreeWords.length">
-        <div *ngFor="let p of bookThreeWords" class="new-word-row">
+      <ng-container *ngIf="parseRes.bookThreeWords && parseRes.bookThreeWords.length">
+        <div *ngFor="let p of parseRes.bookThreeWords" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -120,12 +120,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Words from the book 4000 #4</h2>
-          <p><strong>Words count</strong> - {{bookFourWords.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.bookFourWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="bookFourWords && bookFourWords.length">
-        <div *ngFor="let p of bookFourWords" class="new-word-row">
+      <ng-container *ngIf="parseRes.bookFourWords && parseRes.bookFourWords.length">
+        <div *ngFor="let p of parseRes.bookFourWords" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -134,12 +134,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Words from the book 4000 #5</h2>
-          <p><strong>Words count</strong> - {{bookFiveWords.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.bookFiveWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="bookFiveWords && bookFiveWords.length">
-        <div *ngFor="let p of bookFiveWords" class="new-word-row">
+      <ng-container *ngIf="parseRes.bookFiveWords && parseRes.bookFiveWords.length">
+        <div *ngFor="let p of parseRes.bookFiveWords" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -148,12 +148,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Words from the book 4000 #6</h2>
-          <p><strong>Words count</strong> - {{bookSixWords.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.bookSixWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="bookSixWords && bookSixWords.length">
-        <div *ngFor="let p of bookSixWords" class="new-word-row">
+      <ng-container *ngIf="parseRes.bookSixWords && parseRes.bookSixWords.length">
+        <div *ngFor="let p of parseRes.bookSixWords" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -162,12 +162,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>English DOM - Elementary</h2>
-          <p><strong>Words count</strong> - {{englishDomElementary.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.englishDomElementary.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="englishDomElementary && englishDomElementary.length">
-        <div *ngFor="let p of englishDomElementary" class="new-word-row">
+      <ng-container *ngIf="parseRes.englishDomElementary && parseRes.englishDomElementary.length">
+        <div *ngFor="let p of parseRes.englishDomElementary" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -176,12 +176,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>English DOM - Pre Intermidiate</h2>
-          <p><strong>Words count</strong> - {{englishDomPreIntermidiate.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.englishDomPreIntermidiate.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="englishDomPreIntermidiate && englishDomPreIntermidiate.length">
-        <div *ngFor="let p of englishDomPreIntermidiate" class="new-word-row">
+      <ng-container *ngIf="parseRes.englishDomPreIntermidiate && parseRes.englishDomPreIntermidiate.length">
+        <div *ngFor="let p of parseRes.englishDomPreIntermidiate" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -191,12 +191,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>English DOM - Intermidiate</h2>
-          <p><strong>Words count</strong> - {{englishDomIntermidiate.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.englishDomIntermidiate.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="englishDomIntermidiate && englishDomIntermidiate.length">
-        <div *ngFor="let p of englishDomIntermidiate" class="new-word-row">
+      <ng-container *ngIf="parseRes.englishDomIntermidiate && parseRes.englishDomIntermidiate.length">
+        <div *ngFor="let p of parseRes.englishDomIntermidiate" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -205,12 +205,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>English DOM - Upper Intermidiate</h2>
-          <p><strong>Words count</strong> - {{englishDomUpperIntermidiate.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.englishDomUpperIntermidiate.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="englishDomUpperIntermidiate && englishDomUpperIntermidiate.length">
-        <div *ngFor="let p of englishDomUpperIntermidiate" class="new-word-row">
+      <ng-container *ngIf="parseRes.englishDomUpperIntermidiate && parseRes.englishDomUpperIntermidiate.length">
+        <div *ngFor="let p of parseRes.englishDomUpperIntermidiate" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -219,12 +219,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>English DOM - Native</h2>
-          <p><strong>Words count</strong> - {{englishDomNative.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.englishDomNative.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="englishDomNative && englishDomNative.length">
-        <div *ngFor="let p of englishDomNative" class="new-word-row">
+      <ng-container *ngIf="parseRes.englishDomNative && parseRes.englishDomNative.length">
+        <div *ngFor="let p of parseRes.englishDomNative" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -233,12 +233,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>English DOM - IELTS</h2>
-          <p><strong>Words count</strong> - {{englishDomIelts.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.englishDomIelts.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="englishDomIelts && englishDomIelts.length">
-        <div *ngFor="let p of englishDomIelts" class="new-word-row">
+      <ng-container *ngIf="parseRes.englishDomIelts && parseRes.englishDomIelts.length">
+        <div *ngFor="let p of parseRes.englishDomIelts" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -247,28 +247,99 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>504 Essential Words</h2>
-          <p><strong>Words count</strong> - {{book504.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.book504.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="book504 && book504.length">
-        <div *ngFor="let p of book504" class="new-word-row">
+      <ng-container *ngIf="parseRes.book504 && parseRes.book504.length">
+        <div *ngFor="let p of parseRes.book504" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
     </mat-expansion-panel>
 
+    <mat-expansion-panel [expanded]="step === 20" hideToggle (opened)="step=20">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Cambridge A1 Movers</h2>
+          <p><strong>Words count</strong> - {{parseRes.cambridgeA1Movers.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="parseRes.cambridgeA1Movers && parseRes.cambridgeA1Movers.length">
+        <div *ngFor="let p of parseRes.cambridgeA1Movers" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 21" hideToggle (opened)="step=21">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Cambridge A1 Flyers</h2>
+          <p><strong>Words count</strong> - {{parseRes.cambridgeA1Flyers.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="parseRes.cambridgeA1Flyers && parseRes.cambridgeA1Flyers.length">
+        <div *ngFor="let p of parseRes.cambridgeA1Flyers" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 19" hideToggle (opened)="step=19">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Cambridge A1</h2>
+          <p><strong>Words count</strong> - {{parseRes.cambridgeA1.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="parseRes.cambridgeA1 && parseRes.cambridgeA1.length">
+        <div *ngFor="let p of parseRes.cambridgeA1" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 22" hideToggle (opened)="step=22">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Cambridge A2</h2>
+          <p><strong>Words count</strong> - {{parseRes.cambridgeA2.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="parseRes.cambridgeA2 && parseRes.cambridgeA2.length">
+        <div *ngFor="let p of parseRes.cambridgeA2" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step === 23" hideToggle (opened)="step=23">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Cambridge B1</h2>
+          <p><strong>Words count</strong> - {{parseRes.cambridgeB1.length}}</p>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="parseRes.cambridgeB1 && parseRes.cambridgeB1.length">
+        <div *ngFor="let p of parseRes.cambridgeB1" class="new-word-row">
+          <strong>{{p}}</strong>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
 
     <mat-expansion-panel [expanded]="step === 3" hideToggle (opened)="step=3">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Other words</h2>
-          <p><strong>Words count</strong> - {{res.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.otherWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="res && res.length">
-        <div *ngFor="let p of res" class="new-word-row">
+      <ng-container *ngIf="parseRes.otherWords && parseRes.otherWords.length">
+        <div *ngFor="let p of parseRes.otherWords" class="new-word-row">
           <strong>{{p}}</strong>
         </div>
       </ng-container>
@@ -294,12 +365,12 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Full List of Words</h2>
-          <p><strong>Words count</strong> - {{uniqueWordsRes.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.uniqueWordsRes.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="uniqueWordsRes && uniqueWordsRes.length">
-        <div *ngFor="let p of uniqueWordsRes" class="new-word-row">
+      <ng-container *ngIf="parseRes.uniqueWordsRes && parseRes.uniqueWordsRes.length">
+        <div *ngFor="let p of parseRes.uniqueWordsRes" class="new-word-row">
           <strong>{{p.getWord().getText()}}</strong>
         </div>
       </ng-container>
