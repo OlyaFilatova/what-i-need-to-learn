@@ -18,18 +18,19 @@ export class AuthenticationService {
   constructor(private angularFireAuth: AngularFireAuth,
               private firestore: AngularFirestore,
               private router: Router) {
-    /*this.user$ = angularFireAuth.authState.pipe(switchMap(user => {
+    this.user$ = angularFireAuth.authState.pipe(switchMap(user => {
       if (user) {
         return this.firestore.doc<User>(`users/${user.uid}`).valueChanges();
       } else {
         return of(null);
       }
-    }));*/
+    }));
   }
 
   async googleSignIn() {
     const provider = new auth.GoogleAuthProvider();
     const credential = await this.angularFireAuth.signInWithPopup(provider);
+    console.log('CREDENTIAL: ', credential);
     return this.updateUserData(credential.user);
   }
   updateUserData(user: User) {
