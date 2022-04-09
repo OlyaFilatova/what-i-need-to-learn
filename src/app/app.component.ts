@@ -43,32 +43,33 @@ export class AppComponent {
     if (this.knownWords && this.knownWords.length > 0) {
       return;
     }
-    /*this.authenticationService.user$.subscribe(data => {
+    this.authenticationService.user$.subscribe(data => {
       if (data) {
         this.wordsService.get(data.uid).subscribe(res => {
           this.knownWords = res;
           console.log(res);
         });
       }
-    });*/
+    });
   }
   getBooks() {
     if (this.books && this.books.length > 0) {
       return;
     }
-    /*this.authenticationService.user$.subscribe(data => {
+    this.authenticationService.user$.subscribe(data => {
       if (data) {
         this.booksService.get(data.uid).subscribe(res => {
           this.books = res;
           console.log(res);
         });
       }
-    });*/
+    });
   }
 
   parseClicked() {
     this.parseRes = null;
     const text = this.getText();
+    console.log('TEXT: ', text);
     this.book = null;
     this.parseText(text);
   }
@@ -80,23 +81,25 @@ export class AppComponent {
           knownWords.push(word.payload.doc.data().text);
         }
       }
+      console.log('KNOWN WORDS: ', knownWords);
       this.parseRes = (new ParseWordsFromText()).parse(text, knownWords);
       this.wordsCount = this.parseRes.uniqueWordsRes.length;
     }
   }
 
-  addToAlreadyKnow($event, word: Word) {
+  addToAlreadyKnow($event, word: WordCount) {
     $event.preventDefault();
-    this.addWordToAlreadyKnow(word.getText());
+    this.addWordToAlreadyKnow(word.getWord().getText());
+    word.show = false;
   }
   addWordToAlreadyKnow(word: string) {
-    /*this.authenticationService.user$.subscribe(data => {
+    this.authenticationService.user$.subscribe(data => {
       if (data) {
         this.wordsService.add({text: word, uid: data.uid}).then(res => {
           console.log(res);
         });
       }
-    });*/
+    });
   }
   stageWordToAlreadyKnow(word: string) {
     this.addToKnown.push(word);
@@ -108,20 +111,22 @@ export class AppComponent {
   }
 
   removeFromAlreadyKnow(word) {
-    /*this.authenticationService.user$.subscribe(data => {
+    this.authenticationService.user$.subscribe(data => {
       if (data) {
-        this.wordsService.remove(word).then(res => {
+        this.wordsService.remove(word.getWord()).then(res => {
           console.log(res);
+          word.show = false;
         });
       }
-    });*/
+    });
   }
 
+
   saveBook() {
-    /*this.authenticationService.user$.subscribe(data => {
+    this.authenticationService.user$.subscribe(data => {
       if (data) {
         const wordsList: string[] = [];
-        for (const r of this.res) {
+        for (const r of this.parseRes.uniqueWordsRes) {
           wordsList.push(r.getWord().getText() + '__' + r.getCount());
         }
         const book: Book = {
@@ -133,11 +138,17 @@ export class AppComponent {
           title: this.getTitle(),
           wordsString: wordsList.join(',')
         };
+        const max_length = 1048576/64;
+        console.log(book.wordsString.length);
+        if (book.wordsString.length > max_length) {
+          alert('Book size is too big!');
+          return;
+        }
         this.booksService.add(book).then(res => {
           console.log(res);
         });
       }
-    });*/
+    });
   }
 
   readBook(i) {

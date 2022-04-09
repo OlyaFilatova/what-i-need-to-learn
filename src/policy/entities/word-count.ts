@@ -3,6 +3,7 @@ import {Word} from './word';
 export class WordCount {
     word: Word;
     count: number;
+    show: boolean = true;
     constructor(word: Word) {
         this.word = word;
     }
