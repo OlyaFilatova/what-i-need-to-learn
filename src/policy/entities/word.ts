@@ -4,6 +4,6 @@ export class Word {
         this.text = text;
     }
     public getText() {
-      return this.text;
+        return this.text;
     }
 }

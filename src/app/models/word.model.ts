@@ -1,4 +1,4 @@
 export interface Word {
-  text: string;
-  count: number;
+    text: string;
+    count: number;
 }
