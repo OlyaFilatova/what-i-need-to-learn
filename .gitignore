@@ -2,6 +2,8 @@
 .env
 src/environments/environment.prod.ts
 src/environments/environment.ts
+.editorconfig
+.firebase
 # compiled output
 /dist
 /tmp
