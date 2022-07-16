@@ -1,42 +1,42 @@
 :host {
-  padding: 1em;
-  display:block;
+    padding: 1em;
+    display: block;
 }
 mat-button-toggle-group {
-  margin-bottom: 12px;
+    margin-bottom: 12px;
 }
 .mat-form-field {
-  width: 100%;
+    width: 100%;
 }
 .mat-form-field ::ng-deep textarea {
-  resize: none;
-  min-height: 200px;
+    resize: none;
+    min-height: 200px;
 }
 .word-row,
 .book-row,
 .new-word-row {
-  margin-bottom: .8em;
-  padding: .4em;
+    margin-bottom: 0.8em;
+    padding: 0.4em;
 }
 .word-row:hover,
 .book-row:hover,
 .new-word-row:hover {
-  background: #f2f2f2;
+    background: #f2f2f2;
 }
 
 .word-row strong,
 .new-word-row strong {
-  min-width: 200px;
-  display: inline-block;
+    min-width: 200px;
+    display: inline-block;
 }
 .book-row strong {
-  min-width: 400px;
-  display: inline-block;
+    min-width: 400px;
+    display: inline-block;
 }
 .new-word-row span {
-  min-width: 60px;
-  display: inline-block;
+    min-width: 60px;
+    display: inline-block;
 }
 cdk-virtual-scroll-viewport {
-  height: 65vh;
+    height: 65vh;
 }

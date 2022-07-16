@@ -1,19 +1,19 @@
-import {Word} from './word';
+import { Word } from './word';
 
 export class WordCount {
     word: Word;
     count: number;
-    show: boolean = true;
+    show = true;
     constructor(word: Word) {
         this.word = word;
     }
     setCount(count: number) {
-      this.count = count;
+        this.count = count;
     }
     public getWord() {
-      return this.word;
+        return this.word;
     }
     public getCount() {
-      return this.count;
+        return this.count;
     }
 }
