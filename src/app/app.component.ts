@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {ParseWordsFromText} from '../policy/use-cases/parse-words-from-text';
+import {ParseWordsFromTimedText} from '../policy/use-cases/parse-words-from-timed-text';
 import {WordCount} from '../policy/entities/word-count';
 import {Word} from '../policy/entities/word';
 import {WordsService} from './services/words.service';
@@ -15,7 +16,12 @@ import {ParseResult} from './models/parse-result';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  cleanRootDoublesControl = new FormControl(false);
+  parsed = false;
   textControl = new FormControl('');
+  fromTimestampControl = new FormControl('00:00:00');
+  toTimestampControl = new FormControl('00:00:00');
+  parseType = new FormControl('any');
   titleControl = new FormControl('New Book');
   title = 'what-i-need-to-learn';
   parseRes: ParseResult;
@@ -26,7 +32,7 @@ export class AppComponent {
   book;
   bookWords;
   currentBookIndex = -1;
-
+  kwSubscription;
   wordsCount = 0;
 
   constructor(public authenticationService: AuthenticationService,
@@ -47,7 +53,6 @@ export class AppComponent {
       if (data) {
         this.wordsService.get(data.uid).subscribe(res => {
           this.knownWords = res;
-          console.log(res);
         });
       }
     });
@@ -60,7 +65,6 @@ export class AppComponent {
       if (data) {
         this.booksService.get(data.uid).subscribe(res => {
           this.books = res;
-          console.log(res);
         });
       }
     });
@@ -69,11 +73,10 @@ export class AppComponent {
   parseClicked() {
     this.parseRes = null;
     const text = this.getText();
-    console.log('TEXT: ', text);
     this.book = null;
-    this.parseText(text);
+    this.parseText(text, this.cleanRootDoublesControl.value);
   }
-  parseText(text) {
+  parseText(text, cleanRootDoubles = false) {
     if (text.length > 0) {
       const knownWords = [];
       if (this.knownWords) {
@@ -81,8 +84,17 @@ export class AppComponent {
           knownWords.push(word.payload.doc.data().text);
         }
       }
-      console.log('KNOWN WORDS: ', knownWords);
-      this.parseRes = (new ParseWordsFromText()).parse(text, knownWords);
+      let parser;
+      if (this.parseType.value == 'any') {
+        parser = (new ParseWordsFromText());
+      } else {
+        parser = (new ParseWordsFromTimedText());
+        parser.setTimestamps(
+          this.fromTimestampControl.value,
+          this.toTimestampControl.value);
+      }
+      this.parseRes = parser.parse(text, knownWords, cleanRootDoubles);
+      this.parsed = true;
       this.wordsCount = this.parseRes.uniqueWordsRes.length;
     }
   }
@@ -113,8 +125,7 @@ export class AppComponent {
   removeFromAlreadyKnow(word) {
     this.authenticationService.user$.subscribe(data => {
       if (data) {
-        this.wordsService.remove(word.getWord()).then(res => {
-          console.log(res);
+        this.wordsService.remove(word.getWord ? word.getWord() : word).then(res => {
           word.show = false;
         });
       }
@@ -139,7 +150,6 @@ export class AppComponent {
           wordsString: wordsList.join(',')
         };
         const max_length = 1048576/64;
-        console.log(book.wordsString.length);
         if (book.wordsString.length > max_length) {
           alert('Book size is too big!');
           return;
@@ -152,12 +162,33 @@ export class AppComponent {
   }
 
   readBook(i) {
+    if (!(this.knownWords && this.knownWords.length > 0)) {
+      this.authenticationService.user$.subscribe(data => {
+        if (data) {
+          this.kwSubscription = this.wordsService.get(data.uid).subscribe(res => {
+            this.knownWords = res;
+            this.kwSubscription.unsubscribe();
+            this.readBook2(i);
+          });
+        }
+      });
+    } else {
+      this.readBook2(i);
+    }
+
+  }
+  readBook2(i) {
     this.currentBookIndex = i;
     this.book = this.books[i];
-    this.bookWords = this.stringToBookWords(this.book.payload.doc.data().wordsString);
+    const bookWords = this.stringToBookWords(this.book.payload.doc.data().wordsString);
+    console.log('KNOWN WORDS LENGTH', this.knownWords);
+    this.parseRes = (new ParseWordsFromText()).separateToKnownAndUnknown(
+        bookWords,
+        this.knownWords.map(word => word.payload.doc.data().text)
+      );
     this.titleControl.setValue(this.book.payload.doc.data().title);
     this.textControl.setValue(this.book.payload.doc.data().text);
-    this.parseRes = null;
+    this.parsed = false;
     this.step = 3;
   }
   stringToBookWords(wordsString) {
@@ -165,10 +196,20 @@ export class AppComponent {
     const bookWords = [];
     words.forEach(value => {
       const word = value.split('__');
-      bookWords.push({
-        text: word[0],
-        count: word[1]
-      });
+
+      const wordCount = new WordCount(new Word(word[0]));
+      wordCount.setCount(word[1]);
+      bookWords.push(wordCount);
+    });
+
+    bookWords.sort((wc1: WordCount, wc2: WordCount) => {
+      if (wc1.count > wc2.count) {
+        return -1;
+      }
+      if (wc1.count < wc2.count) {
+        return 1;
+      }
+      return 0;
     });
     return bookWords;
   }

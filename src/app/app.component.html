@@ -13,24 +13,53 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
+
+    <mat-button-toggle-group name="parseType" [formControl]="parseType">
+      <mat-button-toggle value="any">Any text</mat-button-toggle>
+      <mat-button-toggle value="timedtext">Youtube timed text JSON</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div *ngIf="parseType.value == 'timedtext'">
+      <mat-form-field class="example-full-width">
+        <mat-label>From timestamp</mat-label>
+        <input matInput [formControl]="fromTimestampControl" />
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>To timestamp</mat-label>
+        <input matInput [formControl]="toTimestampControl" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-checkbox [formControl]="cleanRootDoublesControl" class="example-full-width">
+        Clean root doubles
+      </mat-checkbox>
+    </div>
     <mat-form-field class="example-full-width">
       <mat-label>Insert text</mat-label>
       <textarea matInput [formControl]="textControl"></textarea>
     </mat-form-field>
     <div>
       <button (click)="parseClicked()" mat-raised-button color="primary">Parse</button>
-      <div *ngIf="authenticationService.user$ | async">
-        <div *ngIf="parseRes?.uniqueWordsRes?.length">
-          <mat-form-field class="example-full-width">
-            <mat-label>New book title</mat-label>
-            <input matInput [formControl]="titleControl" />
-          </mat-form-field>
-          <button (click)="saveBook()" mat-raised-button color="primary">Save as Book</button>
-        </div>
-      </div>
     </div>
   </mat-expansion-panel>
   <ng-container *ngIf="authenticationService.user$ | async">
+
+
+    <mat-expansion-panel *ngIf="parsed" hideToggle (opened)="step=3;">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Save List</h2>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngIf="parseRes?.uniqueWordsRes?.length">
+        <mat-form-field class="example-full-width">
+          <mat-label>New book title</mat-label>
+          <input matInput [formControl]="titleControl" />
+        </mat-form-field>
+        <button (click)="saveBook()" mat-raised-button color="primary">Save as Book</button>
+      </div>
+    </mat-expansion-panel>
+
     <mat-expansion-panel hideToggle (opened)="step=1;getBooks()">
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -45,7 +74,7 @@
     <mat-expansion-panel hideToggle (opened)="step=2;getKnownWords()">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <h2>Known words</h2>
+          <h2>Known words - {{knownWords?.length}}</h2>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div *ngFor="let word of knownWords" class="word-row">
@@ -55,8 +84,8 @@
     </mat-expansion-panel>
   </ng-container>
 
-  <ng-container *ngIf="wordsCount">
-    <h2>Words count - {{wordsCount}} + {{parseRes?.knownWords?.length || 0}}</h2>
+  <ng-container *ngIf="parseRes?.uniqueWordsRes?.length || parseRes?.knownWords?.length">
+    <h2>Words count - {{parseRes?.uniqueWordsRes?.length}} + {{parseRes?.knownWords?.length || 0}}</h2>
 
     <mat-expansion-panel [expanded]="step === 18" hideToggle (opened)="step=18">
       <mat-expansion-panel-header>
@@ -82,7 +111,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <h2>Known Words</h2>
-          <p><strong>Words count</strong> - {{parseRes?.knownWords?.length}}</p>
+          <p><strong>Words count</strong> - {{parseRes.knownWords.length}}</p>
         </mat-panel-title>
       </mat-expansion-panel-header>
 

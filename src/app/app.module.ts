@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -16,6 +18,7 @@ import {RouterModule} from '@angular/router';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,13 +31,14 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
     FormsModule,
     MatInputModule,
     MatButtonModule,
+    MatButtonToggleModule,
+    MatCheckboxModule,
     MatExpansionModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     ScrollingModule,
     RouterModule.forRoot(
       [
-        /*{ path: 'notes', component: NotesListComponent,  canActivate: [AuthGuard] }*/
       ]
     )
   ],
