@@ -4,7 +4,10 @@
 <router-outlet></router-outlet>
 
 <mat-accordion>
-    <mat-expansion-panel hideToggle (opened)="step = 0; loadKnownWords()">
+    <mat-expansion-panel
+        hideToggle
+        (opened)="step = STEPS.parseText; loadKnownWords()"
+    >
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <h2>Parse some text</h2>
@@ -28,6 +31,7 @@
                 <input matInput [formControl]="toTimestampControl" />
             </mat-form-field>
         </div>
+
         <div>
             <mat-checkbox
                 [formControl]="cleanRootDoublesControl"
@@ -36,39 +40,47 @@
                 Clean root doubles
             </mat-checkbox>
         </div>
+
         <mat-form-field class="example-full-width">
             <mat-label>Insert text</mat-label>
             <textarea matInput [formControl]="textControl"></textarea>
         </mat-form-field>
+
         <div>
             <button (click)="startParsing()" mat-raised-button color="primary">
                 Parse
             </button>
         </div>
     </mat-expansion-panel>
+
     <ng-container *ngIf="authenticationService.user$ | async">
         <mat-expansion-panel
             *ngIf="parseRes?.uniqueWordsRes"
             hideToggle
-            (opened)="step = 3"
+            (opened)="step = STEPS.saveBook"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>Save List</h2>
                 </mat-panel-title>
             </mat-expansion-panel-header>
+
             <div *ngIf="parseRes?.uniqueWordsRes?.length">
                 <mat-form-field class="example-full-width">
                     <mat-label>New book title</mat-label>
                     <input matInput [formControl]="titleControl" />
                 </mat-form-field>
+
                 <button (click)="saveBook()" mat-raised-button color="primary">
                     Save as Book
                 </button>
             </div>
         </mat-expansion-panel>
 
-        <mat-expansion-panel hideToggle (opened)="step = 1; loadBooks()">
+        <mat-expansion-panel
+            hideToggle
+            (opened)="step = STEPS.savedBooks; loadBooks()"
+        >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>My books</h2>
@@ -90,7 +102,11 @@
                 </button>
             </div>
         </mat-expansion-panel>
-        <mat-expansion-panel hideToggle (opened)="step = 2; loadKnownWords()">
+
+        <mat-expansion-panel
+            hideToggle
+            (opened)="step = STEPS.knownWords; loadKnownWords()"
+        >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>Known words - {{ knownWords?.length }}</h2>
@@ -119,9 +135,9 @@
         </h2>
 
         <mat-expansion-panel
-            [expanded]="step === 18"
+            [expanded]="step === STEPS.parsedWords_Unique"
             hideToggle
-            (opened)="step = 18"
+            (opened)="step = STEPS.parsedWords_Unique"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -159,9 +175,9 @@
             </ng-container>
         </mat-expansion-panel>
         <mat-expansion-panel
-            [expanded]="step === 19"
+            [expanded]="step === STEPS.parsedWords_known"
             hideToggle
-            (opened)="step = 19"
+            (opened)="step = STEPS.parsedWords_known"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>

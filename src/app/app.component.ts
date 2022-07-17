@@ -18,6 +18,14 @@ import { TextParsingService } from './services/text-parsing.service';
     styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+    STEPS = {
+        knownWords: 2,
+        parsedWords_Unique: 18,
+        parsedWords_known: 19,
+        parseText: 0,
+        saveBook: 3,
+        savedBooks: 1,
+    };
     // vvv Controls
     cleanRootDoublesControl = new FormControl(false);
     textControl = new FormControl('');
@@ -73,19 +81,15 @@ export class AppComponent {
     }
 
     public startParsing() {
-        this.parseRes = null;
         this.openedBook = null;
 
-        const textToParse = this.getTextToParse();
-        const onlyWithUniqueRoots = this.cleanRootDoublesControl.value;
-
         this.parseRes = this.textParsingService.parseText(
-            textToParse,
+            this.getTextToParse(),
             this.knownWordsText,
             this.parseType.value,
             this.fromTimestampControl.value,
             this.toTimestampControl.value,
-            onlyWithUniqueRoots
+            this.cleanRootDoublesControl.value
         );
     }
 
