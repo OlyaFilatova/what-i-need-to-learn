@@ -28,6 +28,7 @@ module.exports = {
     ],
     root: true,
     rules: {
+        'no-prototype-builtins': 'off',
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': ['error'],
         '@typescript-eslint/no-floating-promises': 'off',

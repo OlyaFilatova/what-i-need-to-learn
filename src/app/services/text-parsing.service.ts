@@ -61,15 +61,9 @@ export class TextParsingService {
             bookWords.push(wordCount);
         });
 
-        bookWords.sort((wc1: WordCount, wc2: WordCount) => {
-            if (wc1.count > wc2.count) {
-                return -1;
-            }
-            if (wc1.count < wc2.count) {
-                return 1;
-            }
-            return 0;
-        });
+        bookWords.sort(
+            (wc1: WordCount, wc2: WordCount) => wc2.count - wc1.count
+        );
         return bookWords;
     }
 }
