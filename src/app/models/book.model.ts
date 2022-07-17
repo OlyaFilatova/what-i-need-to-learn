@@ -7,6 +7,7 @@ export interface Book {
     };
     title: string;
     text: string;
-    words?: Word[];
     wordsString?: string;
+
+    words?: Word[];
 }

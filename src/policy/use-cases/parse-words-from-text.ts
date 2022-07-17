@@ -1,6 +1,6 @@
 import { WordCount } from '../entities/word-count';
 import { Word } from '../entities/word';
-import { ParseResult } from '../../app/models/parse-result';
+import { ParseResult } from '../entities/parse-result';
 
 export class ParseWordsFromText {
     allIrregularVerbs = [

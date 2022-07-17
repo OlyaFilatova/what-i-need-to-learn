@@ -4,7 +4,7 @@
 <router-outlet></router-outlet>
 
 <mat-accordion>
-    <mat-expansion-panel hideToggle (opened)="step = 0; getKnownWords()">
+    <mat-expansion-panel hideToggle (opened)="step = 0; loadKnownWords()">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <h2>Parse some text</h2>
@@ -41,13 +41,17 @@
             <textarea matInput [formControl]="textControl"></textarea>
         </mat-form-field>
         <div>
-            <button (click)="parseClicked()" mat-raised-button color="primary">
+            <button (click)="startParsing()" mat-raised-button color="primary">
                 Parse
             </button>
         </div>
     </mat-expansion-panel>
     <ng-container *ngIf="authenticationService.user$ | async">
-        <mat-expansion-panel *ngIf="parsed" hideToggle (opened)="step = 3">
+        <mat-expansion-panel
+            *ngIf="parseRes?.uniqueWordsRes"
+            hideToggle
+            (opened)="step = 3"
+        >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>Save List</h2>
@@ -64,18 +68,21 @@
             </div>
         </mat-expansion-panel>
 
-        <mat-expansion-panel hideToggle (opened)="step = 1; getBooks()">
+        <mat-expansion-panel hideToggle (opened)="step = 1; loadBooks()">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>My books</h2>
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <div *ngFor="let book of books; let i = index" class="book-row">
+            <div
+                *ngFor="let book of savedBooks; let i = index"
+                class="book-row"
+            >
                 <strong>{{ book.payload.doc.data().title }}</strong
                 ><button
                     type="button"
-                    (click)="readBook(i)"
+                    (click)="openBook(i)"
                     mat-raised-button
                     color="primary"
                 >
@@ -83,7 +90,7 @@
                 </button>
             </div>
         </mat-expansion-panel>
-        <mat-expansion-panel hideToggle (opened)="step = 2; getKnownWords()">
+        <mat-expansion-panel hideToggle (opened)="step = 2; loadKnownWords()">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>Known words - {{ knownWords?.length }}</h2>
@@ -93,7 +100,7 @@
                 <strong>{{ word.payload.doc.data().text }} </strong>
                 <button
                     type="button"
-                    (click)="removeFromAlreadyKnow(word)"
+                    (click)="removeFromAlreadyKnow($event, word)"
                     mat-raised-button
                     color="accent"
                 >
@@ -177,7 +184,7 @@
                             <td>
                                 <button
                                     type="button"
-                                    (click)="removeFromAlreadyKnow(p)"
+                                    (click)="removeFromAlreadyKnow($event, p)"
                                     mat-raised-button
                                     color="accent"
                                 >

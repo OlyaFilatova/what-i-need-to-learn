@@ -8,7 +8,8 @@ import {
 
 import { Observable } from 'rxjs';
 import { tap, map, take } from 'rxjs/operators';
-import { AuthenticationService } from './shared/authentication.service';
+
+import { AuthenticationService } from './services/authentication.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -20,10 +21,9 @@ export class AuthGuard implements CanActivate {
     ): Observable<boolean> {
         return this.auth.user$.pipe(
             take(1),
-            map((user) => !!user), // <-- map to boolean
+            map((user) => !!user),
             tap((loggedIn) => {
                 if (!loggedIn) {
-                    console.log('access denied');
                     this.router.navigate(['/login']);
                 }
             })
