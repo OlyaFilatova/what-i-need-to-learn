@@ -18,15 +18,14 @@ import { TextParsingService } from './services/text-parsing.service';
     styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-    /*
-     * Controls
-     */
+    // vvv Controls
     cleanRootDoublesControl = new FormControl(false);
     textControl = new FormControl('');
     fromTimestampControl = new FormControl('00:00:00');
     toTimestampControl = new FormControl('00:00:00');
     parseType = new FormControl('any');
     titleControl = new FormControl('New Book');
+    // ^^^ Controls
 
     parseRes: ParseResult;
 
@@ -80,7 +79,6 @@ export class AppComponent {
         const textToParse = this.getTextToParse();
         const onlyWithUniqueRoots = this.cleanRootDoublesControl.value;
 
-        // text parsing service
         this.parseRes = this.textParsingService.parseText(
             textToParse,
             this.knownWordsText,
@@ -130,8 +128,13 @@ export class AppComponent {
             return true;
         }
 
-        const res = await this.wordsStorageService.get(this.uid).toPromise();
-        this.setKnownWords(res);
+        const knownWords = await new Promise((resolve) =>
+            this.wordsStorageService
+                .get(this.uid)
+                .subscribe((words) => resolve(words))
+        );
+
+        this.setKnownWords(knownWords);
     }
 
     private readBook() {
@@ -144,12 +147,6 @@ export class AppComponent {
             this.textParsingService.stringToBookWords(wordsString),
             this.knownWordsText
         );
-
-        this.switchToStepX();
-    }
-
-    private switchToStepX() {
-        this.step = 3;
     }
 
     private showWord(word: WordCount) {
