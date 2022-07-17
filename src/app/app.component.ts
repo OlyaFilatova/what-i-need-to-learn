@@ -26,6 +26,7 @@ export class AppComponent {
         saveBook: 3,
         savedBooks: 1,
     };
+
     // vvv Controls
     cleanRootDoublesControl = new FormControl(false);
     textControl = new FormControl('');
@@ -65,6 +66,10 @@ export class AppComponent {
     }
 
     public loadKnownWords() {
+        if (!this.uid) {
+            return;
+        }
+
         if (!this.hasKnownWordsLoaded()) {
             this.wordsStorageService.get(this.uid).subscribe((res) => {
                 this.setKnownWords(res);
@@ -73,6 +78,10 @@ export class AppComponent {
     }
 
     public loadBooks() {
+        if (!this.uid) {
+            return;
+        }
+
         if (!this.hasBooksLoaded()) {
             this.booksStorageService.get(this.uid).subscribe((res) => {
                 this.savedBooks = res;

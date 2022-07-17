@@ -165,9 +165,22 @@
                                     (click)="addToAlreadyKnow($event, p)"
                                     mat-raised-button
                                     color="accent"
+                                    *ngIf="
+                                        authenticationService.user$ | async;
+                                        else login
+                                    "
                                 >
                                     I know this word
                                 </button>
+                                <ng-template #login>
+                                    <button
+                                        (click)="
+                                            authenticationService.googleSignIn()
+                                        "
+                                    >
+                                        Login to save this word
+                                    </button>
+                                </ng-template>
                             </td>
                         </tr>
                     </ng-container>
@@ -175,6 +188,7 @@
             </ng-container>
         </mat-expansion-panel>
         <mat-expansion-panel
+            *ngIf="authenticationService.user$ | async"
             [expanded]="step === STEPS.parsedWords_known"
             hideToggle
             (opened)="step = STEPS.parsedWords_known"
