@@ -4,7 +4,10 @@
 <router-outlet></router-outlet>
 
 <mat-accordion>
-    <mat-expansion-panel hideToggle (opened)="step = 0; getKnownWords()">
+    <mat-expansion-panel
+        hideToggle
+        (opened)="step = STEPS.parseText; loadKnownWords()"
+    >
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <h2>Parse some text</h2>
@@ -28,6 +31,7 @@
                 <input matInput [formControl]="toTimestampControl" />
             </mat-form-field>
         </div>
+
         <div>
             <mat-checkbox
                 [formControl]="cleanRootDoublesControl"
@@ -36,46 +40,61 @@
                 Clean root doubles
             </mat-checkbox>
         </div>
+
         <mat-form-field class="example-full-width">
             <mat-label>Insert text</mat-label>
             <textarea matInput [formControl]="textControl"></textarea>
         </mat-form-field>
+
         <div>
-            <button (click)="parseClicked()" mat-raised-button color="primary">
+            <button (click)="startParsing()" mat-raised-button color="primary">
                 Parse
             </button>
         </div>
     </mat-expansion-panel>
+
     <ng-container *ngIf="authenticationService.user$ | async">
-        <mat-expansion-panel *ngIf="parsed" hideToggle (opened)="step = 3">
+        <mat-expansion-panel
+            *ngIf="parseRes?.uniqueWordsRes"
+            hideToggle
+            (opened)="step = STEPS.saveBook"
+        >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>Save List</h2>
                 </mat-panel-title>
             </mat-expansion-panel-header>
+
             <div *ngIf="parseRes?.uniqueWordsRes?.length">
                 <mat-form-field class="example-full-width">
                     <mat-label>New book title</mat-label>
                     <input matInput [formControl]="titleControl" />
                 </mat-form-field>
+
                 <button (click)="saveBook()" mat-raised-button color="primary">
                     Save as Book
                 </button>
             </div>
         </mat-expansion-panel>
 
-        <mat-expansion-panel hideToggle (opened)="step = 1; getBooks()">
+        <mat-expansion-panel
+            hideToggle
+            (opened)="step = STEPS.savedBooks; loadBooks()"
+        >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>My books</h2>
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <div *ngFor="let book of books; let i = index" class="book-row">
+            <div
+                *ngFor="let book of savedBooks; let i = index"
+                class="book-row"
+            >
                 <strong>{{ book.payload.doc.data().title }}</strong
                 ><button
                     type="button"
-                    (click)="readBook(i)"
+                    (click)="openBook(i)"
                     mat-raised-button
                     color="primary"
                 >
@@ -83,7 +102,11 @@
                 </button>
             </div>
         </mat-expansion-panel>
-        <mat-expansion-panel hideToggle (opened)="step = 2; getKnownWords()">
+
+        <mat-expansion-panel
+            hideToggle
+            (opened)="step = STEPS.knownWords; loadKnownWords()"
+        >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <h2>Known words - {{ knownWords?.length }}</h2>
@@ -93,7 +116,7 @@
                 <strong>{{ word.payload.doc.data().text }} </strong>
                 <button
                     type="button"
-                    (click)="removeFromAlreadyKnow(word)"
+                    (click)="removeFromAlreadyKnow($event, word)"
                     mat-raised-button
                     color="accent"
                 >
@@ -112,9 +135,9 @@
         </h2>
 
         <mat-expansion-panel
-            [expanded]="step === 18"
+            [expanded]="step === STEPS.parsedWords_Unique"
             hideToggle
-            (opened)="step = 18"
+            (opened)="step = STEPS.parsedWords_Unique"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -142,9 +165,22 @@
                                     (click)="addToAlreadyKnow($event, p)"
                                     mat-raised-button
                                     color="accent"
+                                    *ngIf="
+                                        authenticationService.user$ | async;
+                                        else login
+                                    "
                                 >
                                     I know this word
                                 </button>
+                                <ng-template #login>
+                                    <button
+                                        (click)="
+                                            authenticationService.googleSignIn()
+                                        "
+                                    >
+                                        Login to save this word
+                                    </button>
+                                </ng-template>
                             </td>
                         </tr>
                     </ng-container>
@@ -152,9 +188,10 @@
             </ng-container>
         </mat-expansion-panel>
         <mat-expansion-panel
-            [expanded]="step === 19"
+            *ngIf="authenticationService.user$ | async"
+            [expanded]="step === STEPS.parsedWords_known"
             hideToggle
-            (opened)="step = 19"
+            (opened)="step = STEPS.parsedWords_known"
         >
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -177,7 +214,7 @@
                             <td>
                                 <button
                                     type="button"
-                                    (click)="removeFromAlreadyKnow(p)"
+                                    (click)="removeFromAlreadyKnow($event, p)"
                                     mat-raised-button
                                     color="accent"
                                 >

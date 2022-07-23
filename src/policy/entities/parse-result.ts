@@ -1,4 +1,4 @@
-import { WordCount } from '../../policy/entities/word-count';
+import { WordCount } from './word-count';
 
 export class ParseResult {
     uniqueWordsRes: WordCount[];

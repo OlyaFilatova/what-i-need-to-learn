@@ -9,6 +9,8 @@ module.exports = {
         node: true,
     },
     extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
     ],
@@ -26,6 +28,9 @@ module.exports = {
     ],
     root: true,
     rules: {
+        'no-prototype-builtins': 'off',
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': ['error'],
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/prefer-for-of': 'off',
         '@typescript-eslint/restrict-plus-operands': 'off',
@@ -78,13 +83,7 @@ module.exports = {
             },
         ],
         '@typescript-eslint/explicit-module-boundary-types': 'off',
-        '@typescript-eslint/indent': [
-            'error',
-            4,
-            {
-                ignoredNodes: ['CallExpression'],
-            },
-        ],
+        '@typescript-eslint/indent': 'off',
         '@typescript-eslint/member-delimiter-style': [
             'error',
             {

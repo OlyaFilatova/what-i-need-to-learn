@@ -4,18 +4,19 @@ import { AngularFirestore } from '@angular/fire/firestore';
 @Injectable({
     providedIn: 'root',
 })
-export class BooksService {
-    collectionName = 'user-books';
-    constructor(private firestore: AngularFirestore) {}
-    add(data) {
+export class BaseStorageService<CollectionInputType> {
+    protected collectionName: string;
+
+    constructor(protected firestore: AngularFirestore) {}
+
+    add(data: CollectionInputType) {
         return new Promise<any>((resolve, reject) => {
             this.firestore
                 .collection(this.collectionName)
                 .add(data)
                 .then(
                     (res) => {
-                        console.log(res);
-                        console.log('data has been added');
+                        resolve(res);
                     },
                     (err) => {
                         reject(err);
@@ -24,23 +25,18 @@ export class BooksService {
         });
     }
 
-    remove(word) {
+    remove(data) {
         return this.firestore
             .collection(this.collectionName)
-            .doc(word.payload.doc.id)
+            .doc(data.payload.doc.id)
             .delete();
     }
+
     get(uid) {
         return this.firestore
             .collection(this.collectionName, (ref) =>
                 ref.where('uid', '==', uid)
             )
             .snapshotChanges();
-    }
-    updateWords(data, newWords) {
-        return this.firestore
-            .collection(this.collectionName)
-            .doc(data.payload.doc.id)
-            .set({ wordsString: newWords }, { merge: true });
     }
 }

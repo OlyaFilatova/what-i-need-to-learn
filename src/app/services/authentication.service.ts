@@ -4,11 +4,13 @@ import {
     AngularFirestore,
     AngularFirestoreDocument,
 } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
+
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { User } from '../models/user.model';
 import { auth } from 'firebase';
+
+import { User } from '../models/user.model';
 
 @Injectable({
     providedIn: 'root',
@@ -37,9 +39,9 @@ export class AuthenticationService {
     async googleSignIn() {
         const provider = new auth.GoogleAuthProvider();
         const credential = await this.angularFireAuth.signInWithPopup(provider);
-        console.log('CREDENTIAL: ', credential);
         return this.updateUserData(credential.user);
     }
+
     updateUserData(user: User) {
         const userRef: AngularFirestoreDocument<User> = this.firestore.doc(
             `users/${user.uid}`
@@ -54,6 +56,7 @@ export class AuthenticationService {
 
         return userRef.set(data, { merge: true });
     }
+
     async googleSignOut() {
         await this.angularFireAuth.signOut();
         return this.router.navigate(['/']);
