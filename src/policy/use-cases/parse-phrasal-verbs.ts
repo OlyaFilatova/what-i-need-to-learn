@@ -1,7 +1,13 @@
 export class ParsePhrasalVerbs {
     private static phrasalVerbsString = this.createPhrasalVerbsString();
     private static createPhrasalVerbsString() {
-        const phrasalVerbs = [
+        // TODO: switch to "base form key": ["regexp list"]
+        // example: 'act on': ['acted on', 'act on', 'acting on', 'acts on', ...]
+        // regexp example: 'bring down': ['bring (a-z)* down', ...]
+        // (do maximum 10 phrases at a time)
+        // document process while doing it
+        const phrasalVerbs = [];
+        /*
             'Act on',
             'Act out',
             'Act up',
@@ -985,7 +991,7 @@ export class ParsePhrasalVerbs {
             'Wipe out',
             'Used up',
             'Die out',
-        ];
+        */
         return phrasalVerbs.join('|');
     }
 }
