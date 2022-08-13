@@ -146,6 +146,15 @@
                         <strong>Words count</strong> -
                         {{ parseRes.uniqueWordsRes.length }}
                     </p>
+
+                    <button
+                        color="accent"
+                        mat-button
+                        style="margin-left: auto"
+                        (click)="copyUniqueWordsToClipboard($event)"
+                    >
+                        Copy to clipboard
+                    </button>
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
@@ -200,6 +209,14 @@
                         <strong>Words count</strong> -
                         {{ parseRes.knownWords.length }}
                     </p>
+                    <button
+                        color="accent"
+                        mat-button
+                        style="margin-left: auto"
+                        (click)="copyKnownWordsToClipboard($event)"
+                    >
+                        Copy to clipboard
+                    </button>
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
