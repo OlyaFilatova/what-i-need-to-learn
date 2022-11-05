@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { WordCount } from '../policy/entities/word-count';
-import { ParseResult } from '../policy/entities/parse-result';
-import { ParseWordsFromText } from '../policy/use-cases/parse-words-from-text';
+import { WordCount } from 'wntl-core';
+import { ParseResult } from 'wntl-core';
+import { ParseWordsFromText } from 'wntl-core';
 
 import { WordStorageService } from './services/word-storage.service';
 import { BookStorageService } from './services/book-storage.service';

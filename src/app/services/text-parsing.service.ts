@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { WordCount } from '../../policy/entities/word-count';
-import { ParseResult } from '../../policy/entities/parse-result';
-import { ParseWordsFromText } from '../../policy/use-cases/parse-words-from-text';
-import { ParseWordsFromTimedText } from '../../policy/use-cases/parse-words-from-timed-text';
-import { Word } from '../../policy/entities/word';
+import { WordCount } from 'wntl-core';
+import { ParseResult } from 'wntl-core';
+import { ParseWordsFromText } from 'wntl-core';
+import { ParseWordsFromTimedText } from 'wntl-core';
+import { Word } from 'wntl-core';
 
 @Injectable({
     providedIn: 'root',
