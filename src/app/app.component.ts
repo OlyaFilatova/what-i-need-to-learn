@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { WordCount } from 'wntl-core';
+import { createClipboardString, WordCount } from 'wntl-core';
 import { ParseResult } from 'wntl-core';
 import { ParseWordsFromText } from 'wntl-core';
 
@@ -11,6 +11,7 @@ import { AuthenticationService } from './services/authentication.service';
 
 import { Book } from './models/book.model';
 import { TextParsingService } from './services/text-parsing.service';
+import { SaveToClipboard } from './ui/clipboard';
 
 @Component({
     selector: 'app-root',
@@ -66,11 +67,7 @@ export class AppComponent {
     }
 
     public loadKnownWords() {
-        if (!this.uid) {
-            return;
-        }
-
-        if (!this.hasKnownWordsLoaded()) {
+        if (this.uid && !this.hasKnownWordsLoaded()) {
             this.wordsStorageService.get(this.uid).subscribe((res) => {
                 this.setKnownWords(res);
             });
@@ -78,11 +75,7 @@ export class AppComponent {
     }
 
     public loadBooks() {
-        if (!this.uid) {
-            return;
-        }
-
-        if (!this.hasBooksLoaded()) {
+        if (this.uid && !this.hasBooksLoaded()) {
             this.booksStorageService.get(this.uid).subscribe((res) => {
                 this.savedBooks = res;
             });
@@ -121,77 +114,36 @@ export class AppComponent {
     public copyUniqueWordsToClipboard($event) {
         $event.stopPropagation();
 
-        const text = this.parseRes.uniqueWordsRes
-            .map((word) => word.getWord().getText())
-            .join('\n');
-
-        this.copyTextToClipboard(text);
+        new SaveToClipboard().copyTextToClipboard(
+            createClipboardString(this.parseRes.uniqueWordsRes)
+        );
     }
 
     public copyKnownWordsToClipboard($event) {
         $event.stopPropagation();
 
-        const text = this.parseRes.knownWords
-            .map((word) => word.getWord().getText())
-            .join('\n');
-
-        this.copyTextToClipboard(text);
+        new SaveToClipboard().copyTextToClipboard(
+            createClipboardString(this.parseRes.knownWords)
+        );
     }
 
-    public saveBook() {
+    public async saveBook() {
         const wordsString = this.textParsingService.createWordsSting(
             this.parseRes.uniqueWordsRes
         );
 
         this.booksStorageService.checkBookSize(wordsString);
 
-        this.booksStorageService
-            .add(this.createBookObject(wordsString))
-            .then(() => {});
+        await this.booksStorageService.add(this.createBookObject(wordsString));
     }
 
-    public openBook(bookIndex: number) {
-        this.openedBook = this.savedBooks[bookIndex];
+    public async openBook(bookIndex: number) {
+        // TODO: payload.doc - can we remove it from component code?
+        this.openedBook = this.savedBooks[bookIndex].payload.doc.data();
 
-        this.assureKnownWordsAreLoaded().then(() => this.readBook());
-    }
+        await this.assureKnownWordsAreLoaded();
 
-    private fallbackCopyTextToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-
-        // Avoid scrolling to bottom
-        textArea.style.top = '0';
-        textArea.style.left = '0';
-        textArea.style.position = 'fixed';
-
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        try {
-            const successful = document.execCommand('copy');
-            const msg = successful ? 'successful' : 'unsuccessful';
-            console.log('Fallback: Copying text command was ' + msg);
-        } catch (err) {
-            console.error('Fallback: Oops, unable to copy', err);
-        }
-
-        document.body.removeChild(textArea);
-    }
-    private copyTextToClipboard(text) {
-        if (!navigator.clipboard) {
-            this.fallbackCopyTextToClipboard(text);
-            return;
-        }
-        navigator.clipboard.writeText(text).then(
-            function () {
-                console.log('Async: Copying to clipboard was successful!');
-            },
-            function (err) {
-                console.error('Async: Could not copy text: ', err);
-            }
-        );
+        this.readBook();
     }
 
     private async assureKnownWordsAreLoaded() {
@@ -209,7 +161,7 @@ export class AppComponent {
     }
 
     private readBook() {
-        const { text, title, wordsString } = this.openedBook.payload.doc.data();
+        const { text, title, wordsString } = this.openedBook;
 
         this.setBookTitle(title);
         this.setBookText(text);
@@ -250,6 +202,7 @@ export class AppComponent {
 
     private setKnownWords(words) {
         this.knownWords = words;
+        // TODO: payload.doc - can we remove it from component code?
         this.knownWordsText = words.map((word) => word.payload.doc.data().text);
     }
 
