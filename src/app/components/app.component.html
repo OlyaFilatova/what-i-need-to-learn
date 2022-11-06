@@ -1,0 +1,175 @@
+<ui-header [level]="1"
+    ><ng-template uiProjected>What I need To Learn</ng-template></ui-header
+>
+<app-user-profile></app-user-profile>
+
+<router-outlet></router-outlet>
+
+<mat-accordion>
+    <mat-expansion-panel
+        hideToggle
+        (opened)="step = STEPS.parseText; loadKnownWords()"
+    >
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <ui-header [level]="2">
+                    <ng-template uiProjected>Parse some text</ng-template>
+                </ui-header>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <app-parse-text
+            [knownWordsText]="knownWordsText"
+            [(text)]="textToParse"
+            (textParsed)="onTextParsed($event)"
+            (parseStarted)="onParseStarted()"
+        ></app-parse-text>
+    </mat-expansion-panel>
+
+    <ng-container *ngIf="isAuthenticated">
+        <mat-expansion-panel
+            *ngIf="parseRes?.uniqueWordsRes"
+            hideToggle
+            (opened)="step = STEPS.saveBook"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <ui-header [level]="2"
+                        ><ng-template uiProjected
+                            >Save List</ng-template
+                        ></ui-header
+                    >
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <app-save-book
+                [uid]="uid"
+                [displayName]="displayName"
+                [parseRes]="parseRes"
+                [parsedText]="textToParse"
+                [bookTitle]="bookTitle"
+                (bookSaved)="onBookSaved()"
+            ></app-save-book>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel
+            hideToggle
+            (opened)="step = STEPS.savedBooks; loadBooks()"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <ui-header [level]="2"
+                        ><ng-template uiProjected
+                            >My books</ng-template
+                        ></ui-header
+                    >
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <app-book-list
+                [savedBooks]="savedBooks"
+                (bookOpened)="openBook($event)"
+            ></app-book-list>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel
+            hideToggle
+            (opened)="step = STEPS.knownWords; loadKnownWords()"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <ui-header [level]="2"
+                        ><ng-template uiProjected
+                            >Known words - {{ knownWords?.length }}</ng-template
+                        ></ui-header
+                    >
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <app-known-words
+                [knownWords]="knownWords"
+                (remove)="removeFromAlreadyKnow($event)"
+            ></app-known-words>
+        </mat-expansion-panel>
+    </ng-container>
+
+    <ng-container
+        *ngIf="parseRes?.uniqueWordsRes?.length || parseRes?.knownWords?.length"
+    >
+        <ui-header [level]="2"
+            ><ng-template uiProjected>
+                Words count - {{ parseRes?.uniqueWordsRes?.length }} +
+                {{ parseRes?.knownWords?.length || 0 }}
+            </ng-template></ui-header
+        >
+
+        <mat-expansion-panel
+            [expanded]="step === STEPS.parsedWords_Unique"
+            hideToggle
+            (opened)="step = STEPS.parsedWords_Unique"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <ui-header [level]="2"
+                        ><ng-template uiProjected
+                            >Unique Words</ng-template
+                        ></ui-header
+                    >
+                    <p>
+                        <strong>Words count</strong> -
+                        {{ parseRes.uniqueWordsRes.length }}
+                    </p>
+
+                    <button
+                        color="accent"
+                        mat-button
+                        style="margin-left: auto"
+                        (click)="copyUniqueWordsToClipboard($event)"
+                    >
+                        Copy to clipboard
+                    </button>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <app-unique-words
+                [uniqueWordsRes]="parseRes.uniqueWordsRes"
+                [isAuthenticated]="isAuthenticated"
+                (addedToKnown)="addToAlreadyKnow($event)"
+                (signInClicked)="signIn()"
+            ></app-unique-words>
+        </mat-expansion-panel>
+        <mat-expansion-panel
+            *ngIf="isAuthenticated"
+            [expanded]="step === STEPS.parsedWords_known"
+            hideToggle
+            (opened)="step = STEPS.parsedWords_known"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <ui-header [level]="2"
+                        ><ng-template uiProjected
+                            >Known Words</ng-template
+                        ></ui-header
+                    >
+                    <p>
+                        <strong>Words count</strong> -
+                        {{ parseRes.knownWords.length }}
+                    </p>
+                    <button
+                        color="accent"
+                        mat-button
+                        style="margin-left: auto"
+                        (click)="copyKnownWordsToClipboard($event)"
+                    >
+                        Copy to clipboard
+                    </button>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <app-known-words-counted
+                [knownWords]="parseRes.knownWords"
+                (remove)="removeFromAlreadyKnow($event)"
+            ></app-known-words-counted>
+        </mat-expansion-panel>
+    </ng-container>
+</mat-accordion>

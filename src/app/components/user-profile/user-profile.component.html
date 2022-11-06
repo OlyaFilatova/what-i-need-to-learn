@@ -1,0 +1,18 @@
+<ng-container
+    *ngIf="authenticationService.user$ | async; then authenticated; else login"
+></ng-container>
+
+<ng-template #login>
+    <ui-button (click)="signIn()">Login with Google</ui-button>
+</ng-template>
+
+<ng-template #authenticated>
+    <ng-container *ngIf="authenticationService.user$ | async as user">
+        <ui-header [level]="3"
+            ><ng-template uiProjected
+                >Howdy, {{ user.displayName }}</ng-template
+            ></ui-header
+        >
+        <ui-button (click)="signOut()">SignOut</ui-button>
+    </ng-container>
+</ng-template>

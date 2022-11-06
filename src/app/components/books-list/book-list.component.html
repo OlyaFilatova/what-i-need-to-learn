@@ -1,0 +1,12 @@
+<div *ngFor="let book of savedBooks; let i = index" class="book-row">
+    <!-- TODO: payload.doc - can we remove it from component code? -->
+    <strong>{{ book.payload.doc.data().title }}</strong
+    ><button
+        type="button"
+        (click)="openBook(i)"
+        mat-raised-button
+        color="primary"
+    >
+        Read
+    </button>
+</div>

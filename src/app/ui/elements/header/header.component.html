@@ -1,0 +1,18 @@
+<h1 *ngIf="level == 1" [id]="contentId">
+    <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+</h1>
+<h2 *ngIf="level == 2" [id]="contentId">
+    <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+</h2>
+<h3 *ngIf="level == 3" [id]="contentId">
+    <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+</h3>
+<h4 *ngIf="level == 4" [id]="contentId">
+    <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+</h4>
+<h5 *ngIf="level == 5" [id]="contentId">
+    <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+</h5>
+<h6 *ngIf="level == 6" [id]="contentId">
+    <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+</h6>

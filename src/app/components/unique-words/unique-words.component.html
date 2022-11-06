@@ -1,0 +1,26 @@
+<ng-container *ngIf="uniqueWordsRes && uniqueWordsRes.length">
+    <table>
+        <ng-container *ngFor="let p of uniqueWordsRes">
+            <tr *ngIf="p.show" class="new-word-row">
+                <td>{{ p.getWord().getText() }}</td>
+                <td style="padding: 0 24px">{{ p.getCount() }}</td>
+                <td>
+                    <button
+                        type="button"
+                        (click)="addToAlreadyKnow($event, p)"
+                        mat-raised-button
+                        color="accent"
+                        *ngIf="isAuthenticated; else login"
+                    >
+                        I know this word
+                    </button>
+                    <ng-template #login>
+                        <button (click)="signIn()">
+                            Login to save this word
+                        </button>
+                    </ng-template>
+                </td>
+            </tr>
+        </ng-container>
+    </table>
+</ng-container>
