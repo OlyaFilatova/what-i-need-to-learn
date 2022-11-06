@@ -1,32 +1,20 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
-import { BaseStorageService } from './base-storage.service';
-
 import { BookInput } from '../input/book.input';
+import { BookStorage } from 'wntl-storage';
 
 @Injectable({
     providedIn: 'root',
 })
-export class BookStorageService extends BaseStorageService<BookInput> {
-    private bookMaxLength = 1048576 / 64;
-
+export class BookStorageService extends BookStorage<BookInput> {
     constructor(protected firestore: AngularFirestore) {
         super(firestore);
-
-        this.collectionName = 'user-books';
     }
-
-    updateWords(data, newWords) {
-        return this.firestore
-            .collection(this.collectionName)
-            .doc(data.payload.doc.id)
-            .set({ wordsString: newWords }, { merge: true });
-    }
-
-    public checkBookSize(wordsString: string) {
-        if (wordsString.length > this.bookMaxLength) {
+    public checkBookSize(wordsString: string): boolean {
+        if (!super.checkBookSize(wordsString)) {
             throw new Error('Book size is too big!');
         }
+        return true;
     }
 }
