@@ -8,10 +8,11 @@ import { Router } from '@angular/router';
 
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
 import { User } from '../models/user.model';
+
+import { AuthFirebase } from 'wntl-auth';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +25,7 @@ export class AuthenticationService {
         private firestore: AngularFirestore,
         private router: Router
     ) {
-        this.user$ = angularFireAuth.authState.pipe(
+        this.user$ = AuthFirebase.setupCurrentUser(this.angularFireAuth).pipe(
             switchMap((user) => {
                 if (user) {
                     return this.firestore
@@ -38,9 +39,8 @@ export class AuthenticationService {
     }
 
     async googleSignIn() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const credential = await this.angularFireAuth.signInWithPopup(provider);
-        return this.updateUserData(credential.user);
+        const user = await AuthFirebase.googleSignIn(this.angularFireAuth);
+        return this.updateUserData(user);
     }
 
     updateUserData(user: User) {
@@ -59,7 +59,7 @@ export class AuthenticationService {
     }
 
     async googleSignOut() {
-        await this.angularFireAuth.signOut();
+        await AuthFirebase.googleSignOut(this.angularFireAuth);
         return this.router.navigate(['/']);
     }
 }
