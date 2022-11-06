@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { WordCount } from 'wntl-core';
-import { ParseResult } from 'wntl-core';
-import { ParseWordsFromText } from 'wntl-core';
-import { ParseWordsFromTimedText } from 'wntl-core';
-import { Word } from 'wntl-core';
+import {
+    ParseResult,
+    ParseWordsFromText,
+    ParseWordsFromTimedText,
+    ParseStorageString,
+} from 'wntl-core';
 
 @Injectable({
     providedIn: 'root',
@@ -39,31 +40,19 @@ export class TextParsingService {
         return parser.parse(text, knownWordsText, cleanRootDoubles);
     }
 
-    public createWordsSting(uniqueWords): string {
-        return uniqueWords
-            .map(
-                (r) =>
-                    r.getWord().getText() +
-                    this.wordInfoDelimiter +
-                    r.getCount()
-            )
-            .join(this.wordsDelimiter);
+    public createWordsSting(uniqueWords) {
+        return new ParseStorageString().createWordsSting(
+            uniqueWords,
+            this.wordsDelimiter,
+            this.wordInfoDelimiter
+        );
     }
 
     public stringToBookWords(wordsString) {
-        const words = wordsString.split(this.wordsDelimiter);
-        const bookWords = [];
-        words.forEach((value) => {
-            const word = value.split(this.wordInfoDelimiter);
-
-            const wordCount = new WordCount(new Word(word[0]));
-            wordCount.setCount(word[1]);
-            bookWords.push(wordCount);
-        });
-
-        bookWords.sort(
-            (wc1: WordCount, wc2: WordCount) => wc2.count - wc1.count
+        return new ParseStorageString().stringToBookWords(
+            wordsString,
+            this.wordsDelimiter,
+            this.wordInfoDelimiter
         );
-        return bookWords;
     }
 }
