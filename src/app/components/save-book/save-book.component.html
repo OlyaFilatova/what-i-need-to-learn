@@ -1,0 +1,10 @@
+<div *ngIf="parseRes?.uniqueWordsRes?.length">
+    <mat-form-field class="example-full-width">
+        <mat-label>New book title</mat-label>
+        <input matInput [formControl]="titleControl" />
+    </mat-form-field>
+
+    <button (click)="saveBook()" mat-raised-button color="primary">
+        Save as Book
+    </button>
+</div>

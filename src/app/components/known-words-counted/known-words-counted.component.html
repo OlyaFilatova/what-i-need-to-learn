@@ -1,0 +1,20 @@
+<ng-container *ngIf="knownWords && knownWords.length">
+    <table>
+        <ng-container *ngFor="let p of knownWords">
+            <tr *ngIf="p.show" class="new-word-row">
+                <td>{{ p.getWord().getText() }}</td>
+                <td style="padding: 0 24px">{{ p.getCount() }}</td>
+                <td>
+                    <button
+                        type="button"
+                        (click)="removeFromAlreadyKnow($event, p)"
+                        mat-raised-button
+                        color="accent"
+                    >
+                        I don't know this word
+                    </button>
+                </td>
+            </tr>
+        </ng-container>
+    </table>
+</ng-container>

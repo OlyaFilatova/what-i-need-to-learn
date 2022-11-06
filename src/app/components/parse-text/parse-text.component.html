@@ -1,0 +1,44 @@
+<mat-button-toggle-group
+    name="parseTypeControl"
+    [formControl]="parseTypeControl"
+>
+    <mat-button-toggle value="any">Any text</mat-button-toggle>
+    <mat-button-toggle value="timedtext"
+        >Youtube timed text JSON</mat-button-toggle
+    >
+</mat-button-toggle-group>
+
+<div *ngIf="parseTypeControl.value == 'timedtext'">
+    <ui-input
+        [label]="'From timestamp'"
+        [control]="fromTimestampControl"
+    ></ui-input>
+    <ui-input
+        [label]="'To timestamp'"
+        [control]="toTimestampControl"
+    ></ui-input>
+</div>
+
+<div>
+    <mat-checkbox
+        [formControl]="cleanRootDoublesControl"
+        class="example-full-width"
+    >
+        Clean root doubles
+    </mat-checkbox>
+</div>
+
+<mat-form-field class="example-full-width">
+    <mat-label>Insert text</mat-label>
+    <textarea
+        matInput
+        [formControl]="textControl"
+        (blur)="textChanged()"
+    ></textarea>
+</mat-form-field>
+
+<div>
+    <button (click)="startParsing()" mat-raised-button color="primary">
+        Parse
+    </button>
+</div>

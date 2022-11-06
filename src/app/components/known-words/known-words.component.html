@@ -1,0 +1,11 @@
+<div *ngFor="let word of knownWords" class="word-row">
+    <strong>{{ word.payload.doc.data().text }} </strong>
+    <button
+        type="button"
+        (click)="removeFromAlreadyKnow($event, word)"
+        mat-raised-button
+        color="accent"
+    >
+        I don't know this word
+    </button>
+</div>

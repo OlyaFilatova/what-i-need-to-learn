@@ -5,10 +5,10 @@
 mat-button-toggle-group {
     margin-bottom: 12px;
 }
-.mat-form-field {
+::ng-deep .mat-form-field {
     width: 100%;
 }
-.mat-form-field ::ng-deep textarea {
+::ng-deep .mat-form-field textarea {
     resize: none;
     min-height: 200px;
 }
